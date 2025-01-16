@@ -1,0 +1,16 @@
+# Нода
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Backend
+/backend/node_modules/
+
+# Frontend
+/frontend/node_modules/
+
+.vscode/
+
+.docker/
+
+*.log
