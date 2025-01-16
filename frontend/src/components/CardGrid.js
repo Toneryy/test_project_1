@@ -10,17 +10,21 @@ function CardGrid() {
   const [newCardDescription, setNewCardDescription] = useState("Description");
   const [activeCardId, setActiveCardId] = useState(null);
 
-  useEffect(() => {
+  const fetchCards = () => {
     axios
       .get("http://localhost:3001/api/cards")
-      .then((res) => setCards(res.data));
+      .then((res) => setCards(res.data.sort((a, b) => a.number - b.number)));
+  };
+
+  useEffect(() => {
+    fetchCards();
   }, []);
 
   const addCard = () => {
     if (newCardTitle && newCardDescription) {
       const newCard = { title: newCardTitle, description: newCardDescription };
-      axios.post("http://localhost:3001/api/cards", newCard).then((res) => {
-        setCards([...cards, res.data]);
+      axios.post("http://localhost:3001/api/cards", newCard).then(() => {
+        fetchCards();
         setIsAdding(false);
         setNewCardTitle("New Card");
         setNewCardDescription("Description");
@@ -29,9 +33,9 @@ function CardGrid() {
   };
 
   const deleteCard = (id) => {
-    axios
-      .delete(`http://localhost:3001/api/cards/${id}`)
-      .then(() => setCards(cards.filter((card) => card.id !== id)));
+    axios.delete(`http://localhost:3001/api/cards/${id}`).then(() => {
+      fetchCards();
+    });
   };
 
   return (

@@ -15,8 +15,18 @@ async function addCard(req, res) {
   try {
     const { title, description } = req.body;
 
-    const maxNumber = (await Card.max("number")) || 0;
-    const newNumber = maxNumber + 1;
+    const cards = await Card.findAll({
+      attributes: ["number"],
+      order: [["number", "ASC"]],
+    });
+    let newNumber = 1;
+    for (let i = 0; i < cards.length; i++) {
+      if (cards[i].number !== i + 1) {
+        newNumber = i + 1;
+        break;
+      }
+      newNumber = cards.length + 1;
+    }
 
     const card = await Card.create({ title, description, number: newNumber });
     res.json(card);
@@ -29,14 +39,7 @@ async function addCard(req, res) {
 const deleteCard = async (req, res) => {
   try {
     const { id } = req.params;
-
     await Card.destroy({ where: { id } });
-
-    const cards = await Card.findAll({ order: [["number", "ASC"]] });
-    for (let i = 0; i < cards.length; i++) {
-      await cards[i].update({ number: i + 1 });
-    }
-
     res.status(200).json({ message: "Card deleted successfully" });
   } catch (error) {
     console.error("Error deleting card:", error);
