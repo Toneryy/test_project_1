@@ -39,5 +39,5 @@
   
 ### Клонирование репозитория:
 ```bash
-git clone https://github.com/ваш_пользователь/ваш_репозиторий.git
+git clone https://github.com/Toneryy/test_project_1.git
 cd ваш_репозиторий
